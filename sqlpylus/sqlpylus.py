@@ -194,9 +194,11 @@ class SqlPylusConnection(object):
             self._connect()
 
         # 末尾のカンマチェック
-        if not sql.rstrip().endswith(':'):
-            sql += ':'
+        if not sql.rstrip().endswith(';'):
+            sql += ';'
 
+        # 日付フォーマットをまともにしておく
+        sql = 'ALTER SESSION SET NLS_DATE_FORMAT=\'yyyy-mm-dd hh24:mi:ss\';\n\n' + sql
         # エラー発生時に終了するようにさせておく
         sql = 'WHENEVER SQLERROR EXIT SQL.SQLCODE\n\n' + sql
         try:
@@ -351,3 +353,10 @@ class SqlPylus(object):
             environ=self.environ
         )
 
+
+if __name__ == '__main__':
+
+    conn = SqlPylus().connect('scott', 'tiger', 'oralin:11204/v1124.world')
+    print(conn)
+    for row in conn.execute('select hiredate from emp;'):
+        print(row)
