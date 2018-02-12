@@ -89,7 +89,10 @@ class SqlplusHtmlResultParser(HTMLParser, object):
             self._row_buffer['tag_name'] = self._last_tag
             # 数字データの場合はalign=rightがtdタグに指定されている
             if ('align', 'right') in self._last_attrs:
-                self._row_buffer['data'].append(float(data.strip()))
+                if data:
+                    self._row_buffer['data'].append(float(data.strip()))
+                else:
+                    self._row_buffer['data'].append(None)
             else:
                 self._row_buffer['data'].append(data.strip())
 
